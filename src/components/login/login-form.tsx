@@ -83,7 +83,10 @@ function LoginForm() {
     toast.error(result?.message);
   };
   return (
-    <form className="space-y-4 p-4" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="space-y-3 px-3 py-5 md:px-4 md:py-6"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <LoginField
         id="email"
         label="البريد الإلكتروني"
@@ -93,7 +96,7 @@ function LoginForm() {
         {...register("email")}
       />
 
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         <div className="text-xs text-gray-500">
           <label htmlFor="password" className="font-medium text-secondary">
             كلمة المرور
@@ -117,11 +120,11 @@ function LoginForm() {
         </Link>
       </div> */}
 
-      <motion.div whileTap={{ scale: 0.99 }}>
+      <motion.div whileTap={{ scale: 0.99 }} className="pt-1">
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="h-11 w-full rounded-lg bg-primary font-bold text-secondary shadow-[0_10px_24px_rgba(255,208,29,0.35)] hover:bg-primary/95"
+          className="h-10 w-full rounded-lg bg-primary font-bold text-secondary shadow-[0_10px_24px_rgba(255,208,29,0.35)] hover:bg-primary/95"
         >
           {isSubmitting ? (
             <Loader />

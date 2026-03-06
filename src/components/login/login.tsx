@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import LoginHeader from "./login-header";
+import LoginHeader from "./login-header-compact";
 import LoginCard from "./login-card";
 
 function Login() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0f1118] px-4 py-10">
+    <main className="relative min-h-screen overflow-hidden bg-[#0f1118] px-4 py-8">
       <div className="pointer-events-none absolute inset-0">
         <div
           className="absolute inset-0 bg-[image:url('/images/scooter.jpg')] bg-size-[100%_100%] bg-center bg-no-repeat"
@@ -21,7 +21,7 @@ function Login() {
         initial={{ opacity: 0, y: 22 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: "easeOut" }}
-        className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-md flex-col items-center justify-center gap-7"
+        className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-md flex-col items-center justify-center gap-5"
       >
         <LoginHeader />
         <LoginCard />

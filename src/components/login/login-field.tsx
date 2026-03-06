@@ -20,7 +20,7 @@ const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
         {label ? (
           <label
             htmlFor={id}
-            className="mb-2 block text-right text-xs font-medium text-secondary"
+            className="mb-1.5 block text-right text-xs font-medium text-secondary"
           >
             {label}
           </label>
@@ -28,7 +28,7 @@ const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
 
         <div
           className={cn(
-            "flex h-11 flex-row-reverse items-center gap-2 rounded-lg border border-[#dbe4ef] bg-[#eef3fb] px-3 transition",
+            "flex h-10 flex-row-reverse items-center gap-2 rounded-lg border border-[#dbe4ef] bg-[#eef3fb] px-3 transition",
             hasError && "border-red-400",
           )}
         >
