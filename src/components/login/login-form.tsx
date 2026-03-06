@@ -1,6 +1,12 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import {
+  useForm,
+  type FieldErrors,
+  type Resolver,
+  type ResolverError,
+  type ResolverSuccess,
+} from "react-hook-form";
 import { LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
@@ -8,46 +14,74 @@ import { loginSchema, type LoginFormValues } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import LoginField from "./login-field";
 import { useRouter } from "next/navigation";
+import { loginAPI } from "@/services/mutations";
+import { setToken } from "@/lib";
+import Loader from "../ui/loader";
+import InputErrorMessage from "../ui/input-error-message";
+
+const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
+  const result = loginSchema.safeParse(values);
+
+  if (result.success) {
+    const successResult: ResolverSuccess<LoginFormValues> = {
+      values: result.data,
+      errors: {},
+    };
+
+    return successResult;
+  }
+
+  const fieldErrors = result.error.flatten().fieldErrors;
+  const errors: FieldErrors<LoginFormValues> = {};
+
+  if (fieldErrors.email?.[0]) {
+    errors.email = {
+      type: "manual",
+      message: fieldErrors.email[0],
+    };
+  }
+
+  if (fieldErrors.password?.[0]) {
+    errors.password = {
+      type: "manual",
+      message: fieldErrors.password[0],
+    };
+  }
+
+  const errorResult: ResolverError<LoginFormValues> = {
+    values: {},
+    errors,
+  };
+
+  return errorResult;
+};
 
 function LoginForm() {
   const router = useRouter();
   const {
     handleSubmit,
     register,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
       email: "",
       password: "",
     },
+    resolver: loginFormResolver,
     mode: "onChange",
   });
 
-  const onSubmit = async (values: LoginFormValues) => {
-    const parsedValues = loginSchema.safeParse(values);
-
-    if (!parsedValues.success) {
-      parsedValues.error.issues.forEach((issue) => {
-        const fieldName = issue.path[0] as keyof LoginFormValues | undefined;
-        if (!fieldName) {
-          return;
-        }
-
-        setError(fieldName, {
-          type: "manual",
-          message: issue.message,
-        });
-      });
-
+  const onSubmit = async (data: LoginFormValues) => {
+    const result = await loginAPI(data);
+    if (result?.ok) {
+      toast.success(result?.message || "Login successful");
+      const token = result?.data?.data?.token;
+      if (token) await setToken(token);
+      router.replace("/");
       return;
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    toast.success("تم تسجيل الدخول بنجاح");
-    router.replace("/");
+    toast.error(result?.message);
   };
-
   return (
     <form className="space-y-4 p-4" onSubmit={handleSubmit(onSubmit)}>
       <LoginField
@@ -75,8 +109,10 @@ function LoginForm() {
         />
       </div>
 
+      <InputErrorMessage msg={errors.root?.message} />
+
       {/* <div className="text-xs">
-        <Link href="#" className="text-secandry transition hover:text-primary">
+        <Link href="#" className="text-secondary transition hover:text-primary">
           نسيت كلمة المرور؟
         </Link>
       </div> */}
@@ -87,8 +123,15 @@ function LoginForm() {
           disabled={isSubmitting}
           className="h-11 w-full rounded-lg bg-primary font-bold text-secondary shadow-[0_10px_24px_rgba(255,208,29,0.35)] hover:bg-primary/95"
         >
-          <LogIn className="size-4" />
-          {isSubmitting ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+          {isSubmitting ? (
+            <Loader />
+          ) : (
+            <>
+              {" "}
+              <LogIn className="size-4" />
+              تسجيل الدخول
+            </>
+          )}
         </Button>
       </motion.div>
     </form>

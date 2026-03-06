@@ -3,21 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
+import { logoutAPI } from "@/services/mutations";
+import { removeToken } from "@/lib";
 
 function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMdSidebarExpanded, setIsMdSidebarExpanded] = useState(false);
 
   const closeSidebar = () => setIsMobileSidebarOpen(false);
-
-  const handleLogout = () => {
-    closeSidebar();
-    router.push("/login");
-  };
 
   const handleDashboardNavigation = (
     event: React.MouseEvent<HTMLAnchorElement>,
@@ -26,6 +22,12 @@ function Sidebar() {
     window.location.assign("/");
   };
 
+  const handleLogout = async () => {
+    closeSidebar();
+    await logoutAPI();
+    await removeToken();
+    window.location.assign("/login");
+  };
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white">
@@ -62,7 +64,7 @@ function Sidebar() {
       <aside className="fixed inset-y-0 right-0 z-50 hidden w-64 border-l border-neutral-300 bg-[#171a20] text-white lg:flex lg:flex-col">
         <div className="flex h-16 items-center justify-center border-b border-black/20 bg-primary px-4">
           <Image
-            src="/images/ev-logo.svg"
+            src="/images/logo.svg"
             alt="EV Share"
             width={150}
             height={42}
@@ -109,7 +111,7 @@ function Sidebar() {
           {isMdSidebarExpanded ? (
             <>
               <Image
-                src="/images/ev-logo.svg"
+                src="/images/logo.svg"
                 alt="EV Share"
                 width={140}
                 height={40}
@@ -133,7 +135,7 @@ function Sidebar() {
               aria-label="Expand sidebar"
             >
               <Image
-                src="/images/logo.svg"
+                src="/images/favicon.svg"
                 alt="favicon"
                 height={100}
                 width={100}
@@ -208,7 +210,7 @@ function Sidebar() {
       >
         <div className="flex h-16 items-center justify-between border-b border-black/20 bg-primary px-4">
           <Image
-            src="/images/ev-logo.svg"
+            src="/images/logo.svg"
             alt="EV Share"
             width={140}
             height={40}

@@ -12,7 +12,7 @@ function LoginHeader() {
     >
       <div>
         {/* <Image
-          src="/images/ev-logo.svg"
+          src="/images/logo.svg"
           alt="EV Share"
           width={44}
           height={44}
