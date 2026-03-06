@@ -6,7 +6,7 @@ import Loader from "@/components/ui/loader";
 import TableShimmer from "@/components/ui/table-shimmer";
 import { changeStatusAPI } from "@/services/mutations";
 import { PartnerRow } from "@/types";
-import { getStatusLabel } from "@/lib";
+import { formatPhoneNumber, getStatusLabel } from "@/lib";
 
 type AdminPartnersTableProps = {
   isLoading: boolean;
@@ -101,7 +101,9 @@ function AdminPartnersTable({
                   rows.map((row) => (
                     <tr key={row.id} className="border-t border-neutral-100">
                       <td className="px-4 py-4 lg:px-6">{row.name}</td>
-                      <td className="px-4 py-4">{row.phone}</td>
+                      <td className="px-4 py-4" dir="ltr">
+                        {formatPhoneNumber(row.phone)}
+                      </td>
                       <td className="px-4 py-4">{row.city}</td>
                       <td className="px-4 py-4 lg:px-6">{row.requestedAt}</td>
                       <td className="px-4 py-4">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { usePartners } from "@/hooks";
 import { PartnersResponse } from "@/types";
+import { formatPhoneNumber } from "@/lib";
 
 type PartnerRecord = Record<string, unknown>;
 
@@ -227,7 +228,9 @@ function Admin() {
                             className="border-t border-neutral-100"
                           >
                             <td className="px-4 py-4 lg:px-6">{row.name}</td>
-                            <td className="px-4 py-4">{row.phone}</td>
+                            <td className="px-4 py-4" dir="ltr">
+                              {formatPhoneNumber(row.phone)}
+                            </td>
                             <td className="px-4 py-4">{row.city}</td>
                             <td className="px-4 py-4 lg:px-6">
                               {row.requestedAt}
