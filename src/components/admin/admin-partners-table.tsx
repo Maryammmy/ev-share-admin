@@ -124,9 +124,9 @@ function AdminPartnersTable({
                                 onRefresh,
                               );
                             }}
-                            className="h-9 rounded-lg bg-primary px-4 font-bold text-secondary hover:bg-primary/95"
+                            className="h-9 rounded-lg bg-emerald-500 px-4 font-bold text-white hover:bg-emerald-600"
                           >
-                            {pendingId === row.id ? <Loader /> : "Approved"}
+                            {pendingId === row.id ? <Loader /> : "Approve"}
                           </Button>
                         ) : (
                           <span className="text-sm text-secondary/45">-</span>
