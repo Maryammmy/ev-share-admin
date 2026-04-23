@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Package, User, X } from "lucide-react";
 import { logoutAPI } from "@/services/mutations";
 import { removeToken } from "@/lib";
 
@@ -13,7 +13,10 @@ function Sidebar() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMdSidebarExpanded, setIsMdSidebarExpanded] = useState(false);
   const sidebarLinkClass =
-    "flex items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold transition";
+    "relative flex items-center gap-2 overflow-hidden rounded-[14px] px-4 py-3 text-sm font-medium transition";
+  const sidebarActiveLinkClass =
+    "bg-[#fff6c8] text-dark-gray before:absolute before:right-0 before:top-1/2 before:h-[34px] before:w-1 before:-translate-y-1/2 before:rounded-l-full before:bg-primary";
+  const sidebarInactiveLinkClass = "text-gray hover:bg-neutral-100";
   const sidebarLogoutClass =
     "mt-auto flex items-center gap-2 rounded-md bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-500 transition hover:bg-rose-100";
 
@@ -33,6 +36,10 @@ function Sidebar() {
     await removeToken();
     window.location.assign("/login");
   };
+
+  const isDashboardActive = pathname === "/";
+  const isAssetsCatalogActive = pathname === "/assets-catalog";
+
   return (
     <>
       <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white">
@@ -79,17 +86,30 @@ function Sidebar() {
         </div>
 
         <nav className="flex flex-1 flex-col px-3 py-4">
+          <p className="mb-2 px-3 text-right text-[11px] font-medium text-gray/80">
+            القائمة الرئيسية
+          </p>
           <Link
             href="/"
             onClick={handleDashboardNavigation}
             className={`${sidebarLinkClass} ${
-              pathname === "/"
-                ? "bg-primary text-secondary"
-                : "text-secondary hover:bg-neutral-100"
+              isDashboardActive ? sidebarActiveLinkClass : sidebarInactiveLinkClass
             }`}
           >
             <LayoutDashboard size={18} />
             <span>لوحة التحكم</span>
+          </Link>
+
+          <Link
+            href="/assets-catalog"
+            className={`${sidebarLinkClass} mt-2 ${
+              isAssetsCatalogActive
+                ? sidebarActiveLinkClass
+                : sidebarInactiveLinkClass
+            }`}
+          >
+            <Package size={18} />
+            <span>كتالوج الأصول</span>
           </Link>
 
           <button
@@ -160,18 +180,41 @@ function Sidebar() {
             onClick={handleDashboardNavigation}
             className={`transition-colors ${
               isMdSidebarExpanded
-                ? "flex h-10 w-full items-center gap-2 rounded-md px-3 text-sm font-semibold"
+                ? "relative flex h-10 w-full items-center gap-2 overflow-hidden rounded-[14px] px-3 text-sm font-medium"
                 : "flex h-10 w-10 items-center justify-center rounded-md"
             } ${
-              pathname === "/"
-                ? "bg-primary text-secondary"
-                : "text-secondary hover:bg-neutral-100"
+              isDashboardActive
+                ? isMdSidebarExpanded
+                  ? sidebarActiveLinkClass
+                  : "bg-[#fff6c8] text-dark-gray"
+                : sidebarInactiveLinkClass
             }`}
             aria-label="Dashboard"
           >
             <LayoutDashboard size={18} className="shrink-0" />
             {isMdSidebarExpanded ? (
               <span className="ms-2 text-sm font-semibold">لوحة التحكم</span>
+            ) : null}
+          </Link>
+
+          <Link
+            href="/assets-catalog"
+            className={`transition-colors ${
+              isMdSidebarExpanded
+                ? "relative flex h-10 w-full items-center gap-2 overflow-hidden rounded-[14px] px-3 text-sm font-medium"
+                : "flex h-10 w-10 items-center justify-center rounded-md"
+            } ${
+              isAssetsCatalogActive
+                ? isMdSidebarExpanded
+                  ? sidebarActiveLinkClass
+                  : "bg-[#fff6c8] text-dark-gray"
+                : sidebarInactiveLinkClass
+            }`}
+            aria-label="Assets catalog"
+          >
+            <Package size={18} className="shrink-0" />
+            {isMdSidebarExpanded ? (
+              <span className="ms-2 text-sm font-semibold">كتالوج الأصول</span>
             ) : null}
           </Link>
 
@@ -237,6 +280,9 @@ function Sidebar() {
         </div>
 
         <nav className="flex flex-1 flex-col px-3 py-4">
+          <p className="mb-2 px-3 text-right text-[11px] font-medium text-gray/80">
+            القائمة الرئيسية
+          </p>
           <Link
             href="/"
             onClick={(event) => {
@@ -244,13 +290,24 @@ function Sidebar() {
               handleDashboardNavigation(event);
             }}
             className={`${sidebarLinkClass} ${
-              pathname === "/"
-                ? "bg-primary text-secondary"
-                : "text-secondary hover:bg-neutral-100"
+              isDashboardActive ? sidebarActiveLinkClass : sidebarInactiveLinkClass
             }`}
           >
             <LayoutDashboard size={18} />
             <span>لوحة التحكم</span>
+          </Link>
+
+          <Link
+            href="/assets-catalog"
+            onClick={closeSidebar}
+            className={`${sidebarLinkClass} mt-2 ${
+              isAssetsCatalogActive
+                ? sidebarActiveLinkClass
+                : sidebarInactiveLinkClass
+            }`}
+          >
+            <Package size={18} />
+            <span>كتالوج الأصول</span>
           </Link>
 
           <button

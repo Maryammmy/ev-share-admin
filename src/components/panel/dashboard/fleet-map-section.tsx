@@ -11,7 +11,7 @@ function clampPosition(value: string, min = "8%", max = "88%") {
 
 function FleetMapSection() {
   return (
-    <DashboardSectionCard className="p-4 sm:p-6">
+    <DashboardSectionCard className="min-w-0 p-4 sm:p-6">
       <div className="space-y-1 text-right">
         <h2 className="text-lg font-semibold text-secondary sm:text-2xl">
           تتبع المنتجات
@@ -93,7 +93,7 @@ function FleetMapSection() {
             </div>
           ))}
 
-          <div className="absolute bottom-2 left-3 inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-medium text-gray shadow-sm sm:bottom-4 sm:left-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
+          <div className="absolute bottom-2 left-5 inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 text-[11px] font-medium text-gray shadow-sm sm:bottom-4 sm:left-4 sm:max-w-none sm:gap-2 sm:px-3 sm:py-2 sm:text-xs">
             <MapPinned className="size-3.5 sm:size-4 text-primary" />
             خريطة توزيع المركبات
           </div>
