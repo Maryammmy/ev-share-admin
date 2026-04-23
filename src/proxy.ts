@@ -2,30 +2,29 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export default function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  // بنجيب التوكن مباشرة من الطلب
   const token = req.cookies.get("token")?.value;
+  const { pathname } = req.nextUrl;
 
   const isLoginPage = pathname.startsWith("/login");
 
-  // لو معاه توكن وبيحاول يدخل لوجين، ابعته للهوم فوراً
+  // لو في توكن وهو رايح للـ login
   if (token && isLoginPage) {
-    return NextResponse.redirect(new URL("/", req.url));
+    const response = NextResponse.redirect(new URL("/", req.url));
+    // السطر ده بيمنع المتصفح إنه يكيش الـ "Login page" كحالة افتراضية
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
-  // لو مش معاه توكن ومش في صفحة اللوجين، ابعته للوجين
+  // لو مفيش توكن ومش في الـ login
   if (!token && !isLoginPage) {
-    const url = new URL("/login", req.url);
-    // السطر ده مهم عشان ميحصلش كاش للـ redirect
-    return NextResponse.redirect(url);
+    const response = NextResponse.redirect(new URL("/login", req.url));
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
-  // غير كدا سيبه يكمل
   return NextResponse.next();
 }
 
 export const config = {
-  // شيلنا الـ regex المعقد وحطينا ماتشر صريح
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
