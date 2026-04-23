@@ -17,6 +17,7 @@ import { loginAPI } from "@/services/mutations";
 import { setToken } from "@/lib";
 import Loader from "../ui/loader";
 import InputErrorMessage from "../ui/input-error-message";
+import { useRouter } from "next/navigation";
 
 const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
   const result = loginSchema.safeParse(values);
@@ -56,6 +57,7 @@ const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
 };
 
 function LoginForm() {
+  const router = useRouter();
   const {
     handleSubmit,
     register,
@@ -82,8 +84,7 @@ function LoginForm() {
 
         const token = result?.data?.data?.token;
         if (token) await setToken(token);
-
-        window.location.replace("/");
+        router.replace("/");
         return;
       }
 
