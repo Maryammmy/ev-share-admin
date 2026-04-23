@@ -4,35 +4,28 @@ import type { NextRequest } from "next/server";
 export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // بنجيب الـ Token
+  // بنجيب التوكن مباشرة من الطلب
   const token = req.cookies.get("token")?.value;
 
-  // هل المستخدم في صفحة اللوجين؟
-  const isLoginPage = pathname === "/login";
+  const isLoginPage = pathname.startsWith("/login");
 
-  // 1. لو معاه Token وبيحاول يفتح صفحة اللوجين -> وديه علطول على الهوم
+  // لو معاه توكن وبيحاول يدخل لوجين، ابعته للهوم فوراً
   if (token && isLoginPage) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // 2. لو معندوش Token ومش في صفحة اللوجين -> اجبره يروح للوجين
+  // لو مش معاه توكن ومش في صفحة اللوجين، ابعته للوجين
   if (!token && !isLoginPage) {
-    return NextResponse.redirect(new URL("/login", req.url));
+    const url = new URL("/login", req.url);
+    // السطر ده مهم عشان ميحصلش كاش للـ redirect
+    return NextResponse.redirect(url);
   }
 
-  // أي حالة تانية (زي إنه معاه Token وفي الهوم) سيبه يكمل عادي
+  // غير كدا سيبه يكمل
   return NextResponse.next();
 }
 
-// الماتشر هنا مهم جداً عشان ميعملش Redirect لملفات الـ CSS أو الصور
 export const config = {
-  matcher: [
-    /*
-     * الماتشر ده بيشغل الميدل وير على كل المسارات ما عدا:
-     * 1. api (إكسكيوت الـ API calls)
-     * 2. _next (ملفات نكست الداخلية)
-     * 3. الملفات اللي فيها نقطة زي .png, .jpg, .svg (الصور)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
-  ],
+  // شيلنا الـ regex المعقد وحطينا ماتشر صريح
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
