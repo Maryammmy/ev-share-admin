@@ -1,6 +1,6 @@
 import { countCards } from "@/data";
-import Shimmer from "../ui/shimmer";
 import { PartnersResponse } from "@/types";
+import Shimmer from "@/components/ui/shimmer";
 
 type AdminCountCardsProps = {
   counts: PartnersResponse["counts"];

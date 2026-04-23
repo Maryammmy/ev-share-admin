@@ -28,7 +28,7 @@ const LoginField = forwardRef<HTMLInputElement, LoginFieldProps>(
 
         <div
           className={cn(
-            "flex h-10 flex-row-reverse items-center gap-2 rounded-lg border border-[#dbe4ef] bg-[#eef3fb] px-3 transition",
+            "flex h-10 items-center gap-2 rounded-lg border border-[#dbe4ef] bg-[#eef3fb] px-3 transition",
             hasError && "border-red-400",
           )}
         >

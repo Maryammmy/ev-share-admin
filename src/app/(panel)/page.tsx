@@ -1,9 +1,9 @@
-import Admin from "@/components/admin/index";
+import Dashboard from "@/components/panel/dashboard";
 
-export default function AdminPage() {
+export default function DashboardPage() {
   return (
     <>
-      <Admin />
+      <Dashboard />
     </>
   );
 }

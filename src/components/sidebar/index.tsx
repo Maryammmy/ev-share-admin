@@ -12,8 +12,13 @@ function Sidebar() {
   const pathname = usePathname();
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isMdSidebarExpanded, setIsMdSidebarExpanded] = useState(false);
+  const sidebarLinkClass =
+    "flex items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold transition";
+  const sidebarLogoutClass =
+    "mt-auto flex items-center gap-2 rounded-md bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-500 transition hover:bg-rose-100";
 
   const closeSidebar = () => setIsMobileSidebarOpen(false);
+  const closeMdSidebar = () => setIsMdSidebarExpanded(false);
 
   const handleDashboardNavigation = (
     event: React.MouseEvent<HTMLAnchorElement>,
@@ -32,7 +37,7 @@ function Sidebar() {
     <>
       <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white">
         <div className="flex h-16 items-center justify-between gap-3 px-4 md:pr-20 lg:px-6 lg:pr-72">
-          <h1 className="min-w-0 truncate text-sm font-extrabold text-secondary sm:text-base md:text-lg lg:text-3xl">
+          <h1 className="min-w-0 truncate text-sm font-extrabold text-secondary sm:text-base md:text-lg lg:text-2xl">
             لوحة التحكم الرئيسية
           </h1>
 
@@ -61,8 +66,8 @@ function Sidebar() {
         </div>
       </header>
 
-      <aside className="fixed inset-y-0 right-0 z-50 hidden w-64 border-l border-neutral-300 bg-[#171a20] text-white lg:flex lg:flex-col">
-        <div className="flex h-16 items-center justify-center border-b border-black/20 bg-primary px-4">
+      <aside className="fixed inset-y-0 right-0 z-50 hidden w-64 border-l border-neutral-200 bg-white text-secondary lg:flex lg:flex-col">
+        <div className="flex h-16 items-center justify-center border-b border-neutral-200 bg-primary px-4">
           <Image
             src="/images/logo.svg"
             alt="EV Share"
@@ -77,10 +82,10 @@ function Sidebar() {
           <Link
             href="/"
             onClick={handleDashboardNavigation}
-            className={`flex items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold transition ${
+            className={`${sidebarLinkClass} ${
               pathname === "/"
                 ? "bg-primary text-secondary"
-                : "text-primary/85 hover:bg-white/10"
+                : "text-secondary hover:bg-neutral-100"
             }`}
           >
             <LayoutDashboard size={18} />
@@ -90,7 +95,7 @@ function Sidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="mt-auto flex w-full items-center gap-2 rounded-md bg-rose-600/10 px-4 py-3 text-sm font-semibold text-rose-400 transition hover:bg-rose-600/20"
+            className={`${sidebarLogoutClass} w-full`}
           >
             <LogOut size={18} />
             <span>تسجيل الخروج</span>
@@ -99,13 +104,13 @@ function Sidebar() {
       </aside>
 
       <aside
-        className={`fixed inset-y-0 right-0 z-40 hidden border-l border-black/20 bg-linear-to-b from-secondary to-black text-primary transition-all duration-300 md:flex md:flex-col lg:hidden ${
+        className={`fixed inset-y-0 right-0 z-40 hidden border-l border-neutral-200 bg-white text-secondary transition-all duration-300 md:flex md:flex-col lg:hidden ${
           isMdSidebarExpanded ? "w-64" : "w-16"
         }`}
       >
         <div
-          className={`flex h-16 items-center bg-primary justify-between border-b border-white/10 ${
-            isMdSidebarExpanded ? "px-4" : "justify-center"
+          className={`flex h-16 items-center border-b border-neutral-200 bg-primary ${
+            isMdSidebarExpanded ? "justify-between px-4" : "justify-center px-3"
           }`}
         >
           {isMdSidebarExpanded ? (
@@ -120,8 +125,8 @@ function Sidebar() {
               />
               <button
                 type="button"
-                onClick={closeSidebar}
-                className="rounded-md p-1 text-secondary transition hover:bg-black/10"
+                onClick={closeMdSidebar}
+                className="rounded-md p-1 text-secondary transition hover:bg-black/5"
                 aria-label="إغلاق القائمة"
               >
                 <X size={22} />
@@ -131,7 +136,7 @@ function Sidebar() {
             <button
               type="button"
               onClick={() => setIsMdSidebarExpanded((prev) => !prev)}
-              className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary text-xl font-black text-secondary"
+              className="grid size-10 shrink-0 place-items-center rounded-md bg-primary text-xl font-black text-secondary"
               aria-label="Expand sidebar"
             >
               <Image
@@ -153,12 +158,14 @@ function Sidebar() {
           <Link
             href="/"
             onClick={handleDashboardNavigation}
-            className={`flex h-10 items-center rounded-xl transition ${
-              isMdSidebarExpanded ? "px-3" : "w-10 justify-center"
+            className={`transition-colors ${
+              isMdSidebarExpanded
+                ? "flex h-10 w-full items-center gap-2 rounded-md px-3 text-sm font-semibold"
+                : "flex h-10 w-10 items-center justify-center rounded-md"
             } ${
               pathname === "/"
                 ? "bg-primary text-secondary"
-                : "text-primary/85 hover:bg-white/10"
+                : "text-secondary hover:bg-neutral-100"
             }`}
             aria-label="Dashboard"
           >
@@ -171,8 +178,10 @@ function Sidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className={`mt-auto flex h-10 items-center rounded-xl text-rose-300 transition hover:bg-rose-500/20 ${
-              isMdSidebarExpanded ? "px-3" : "w-10 justify-center"
+            className={`transition-colors ${
+              isMdSidebarExpanded
+                ? "mt-auto flex h-10 w-full items-center gap-2 rounded-md bg-rose-50 px-3 text-sm font-semibold text-rose-500 hover:bg-rose-100"
+                : "mt-auto flex h-10 w-10 items-center justify-center rounded-md bg-rose-50 text-rose-500 transition hover:bg-rose-100"
             }`}
             aria-label="Logout"
           >
@@ -203,12 +212,12 @@ function Sidebar() {
       />
 
       <aside
-        className={`fixed inset-y-0 right-0 z-50 flex w-[84%] max-w-72 flex-col bg-[#171a20] text-white shadow-xl transition-transform duration-300 md:hidden ${
+        className={`fixed inset-y-0 right-0 z-50 flex w-[84%] max-w-72 flex-col bg-white text-secondary shadow-xl transition-transform duration-300 md:hidden ${
           isMobileSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
         aria-hidden={!isMobileSidebarOpen}
       >
-        <div className="flex h-16 items-center justify-between border-b border-black/20 bg-primary px-4">
+        <div className="flex h-16 items-center justify-between border-b border-neutral-200 bg-primary px-4">
           <Image
             src="/images/logo.svg"
             alt="EV Share"
@@ -220,7 +229,7 @@ function Sidebar() {
           <button
             type="button"
             onClick={closeSidebar}
-            className="rounded-md p-1 text-secondary transition hover:bg-black/10"
+            className="rounded-md p-1 text-secondary transition hover:bg-black/5"
             aria-label="إغلاق القائمة"
           >
             <X size={22} />
@@ -234,10 +243,10 @@ function Sidebar() {
               closeSidebar();
               handleDashboardNavigation(event);
             }}
-            className={`flex items-center gap-2 rounded-md px-4 py-3 text-sm font-semibold transition ${
+            className={`${sidebarLinkClass} ${
               pathname === "/"
                 ? "bg-primary text-secondary"
-                : "text-primary/85 hover:bg-white/10"
+                : "text-secondary hover:bg-neutral-100"
             }`}
           >
             <LayoutDashboard size={18} />
@@ -247,7 +256,7 @@ function Sidebar() {
           <button
             type="button"
             onClick={handleLogout}
-            className="mt-auto flex w-full items-center gap-2 rounded-md bg-rose-600/10 px-4 py-3 text-sm font-semibold text-rose-400 transition hover:bg-rose-600/20"
+            className={`${sidebarLogoutClass} w-full`}
           >
             <LogOut size={18} />
             <span>تسجيل الخروج</span>
