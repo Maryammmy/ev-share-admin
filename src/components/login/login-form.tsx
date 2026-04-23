@@ -84,7 +84,8 @@ function LoginForm() {
 
         const token = result?.data?.data?.token;
         if (token) await setToken(token);
-        router.replace("/");
+        router.refresh(); // اجبري Nextjs يحس بالـ Cookie الجديدة
+        router.replace("/"); // وبعدين وديه للهوم
         return;
       }
 

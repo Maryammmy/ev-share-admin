@@ -1,33 +1,38 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export default function proxy(req: NextRequest) {
+export default function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // ✅ Dashboard guard
-  if (pathname.startsWith("/")) {
-    const token = req.cookies.get("token")?.value;
-    const isLogin = pathname === "/login" || pathname.startsWith("/login/");
+  // بنجيب الـ Token
+  const token = req.cookies.get("token")?.value;
 
-    // 1) لو معاه token: امنعي /dashboard/login
-    if (token && isLogin) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/";
-      return NextResponse.redirect(url);
-    }
+  // هل المستخدم في صفحة اللوجين؟
+  const isLoginPage = pathname === "/login";
 
-    // 2) لو مش معاه token: امنعي أي dashboard route غير login
-    if (!token && !isLogin) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/login";
-      return NextResponse.redirect(url);
-    }
-
-    // يسمح بالوصول: (token موجود لأي dashboard) أو (login بدون token)
-    return NextResponse.next();
+  // 1. لو معاه Token وبيحاول يفتح صفحة اللوجين -> وديه علطول على الهوم
+  if (token && isLoginPage) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
+
+  // 2. لو معندوش Token ومش في صفحة اللوجين -> اجبره يروح للوجين
+  if (!token && !isLoginPage) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  // أي حالة تانية (زي إنه معاه Token وفي الهوم) سيبه يكمل عادي
+  return NextResponse.next();
 }
 
+// الماتشر هنا مهم جداً عشان ميعملش Redirect لملفات الـ CSS أو الصور
 export const config = {
-  matcher: ["/((?!api|trpc|_next|_vercel|.*\\..*).*)"],
+  matcher: [
+    /*
+     * الماتشر ده بيشغل الميدل وير على كل المسارات ما عدا:
+     * 1. api (إكسكيوت الـ API calls)
+     * 2. _next (ملفات نكست الداخلية)
+     * 3. الملفات اللي فيها نقطة زي .png, .jpg, .svg (الصور)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)",
+  ],
 };
