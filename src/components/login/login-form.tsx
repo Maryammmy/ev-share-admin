@@ -13,7 +13,6 @@ import { motion } from "framer-motion";
 import { loginSchema, type LoginFormValues } from "@/schemas";
 import { Button } from "@/components/ui/button";
 import LoginField from "./login-field";
-import { useRouter } from "next/navigation";
 import { loginAPI } from "@/services/mutations";
 import { setToken } from "@/lib";
 import Loader from "../ui/loader";
@@ -57,10 +56,11 @@ const loginFormResolver: Resolver<LoginFormValues> = async (values) => {
 };
 
 function LoginForm() {
-  const router = useRouter();
   const {
     handleSubmit,
     register,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
@@ -72,17 +72,37 @@ function LoginForm() {
   });
 
   const onSubmit = async (data: LoginFormValues) => {
-    const result = await loginAPI(data);
-    if (result?.ok) {
-      toast.success(result?.message || "Login successful");
-      const token = result?.data?.data?.token;
-      if (token) await setToken(token);
-      router.refresh();
-      window.location.assign("/");
-      return;
+    clearErrors("root");
+
+    try {
+      const result = await loginAPI(data);
+
+      if (result?.ok) {
+        toast.success(result?.message || "Login successful");
+
+        const token = result?.data?.data?.token;
+        if (token) await setToken(token);
+
+        window.location.replace("/");
+        return;
+      }
+
+      const errorMessage = result?.message || "Failed to login";
+      setError("root", {
+        type: "server",
+        message: errorMessage,
+      });
+      toast.error(errorMessage);
+    } catch {
+      const errorMessage = "Something went wrong. Please try again.";
+      setError("root", {
+        type: "server",
+        message: errorMessage,
+      });
+      toast.error(errorMessage);
     }
-    toast.error(result?.message);
   };
+
   return (
     <form
       className="space-y-3 px-3 py-5 md:px-4 md:py-6"
