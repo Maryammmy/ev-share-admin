@@ -177,10 +177,12 @@ function ActionButton({
 
 function AssetActions({
   compact = false,
+  onView,
   onEdit,
   onDelete,
 }: {
   compact?: boolean;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) {
@@ -188,6 +190,7 @@ function AssetActions({
     <div className={cn("flex items-center gap-2", compact && "w-full")}>
       <ActionButton
         icon={Eye}
+        onClick={onView}
         label="عرض الأصل"
         className={cn("bg-blue-50 text-blue-600", compact && "flex-1")}
       />
@@ -209,10 +212,12 @@ function AssetActions({
 
 function AssetsTable({
   assets,
+  onViewAsset,
   onEditAsset,
   onDeleteAsset,
 }: {
   assets: AssetItem[];
+  onViewAsset: (asset: AssetItem) => void;
   onEditAsset: (asset: AssetItem) => void;
   onDeleteAsset: (asset: AssetItem) => void;
 }) {
@@ -270,6 +275,7 @@ function AssetsTable({
                 </td>
                 <td className="border-b border-primary/15 px-5 py-3">
                   <AssetActions
+                    onView={() => onViewAsset(asset)}
                     onEdit={() => onEditAsset(asset)}
                     onDelete={() => onDeleteAsset(asset)}
                   />
@@ -285,10 +291,12 @@ function AssetsTable({
 
 function AssetsCards({
   assets,
+  onViewAsset,
   onEditAsset,
   onDeleteAsset,
 }: {
   assets: AssetItem[];
+  onViewAsset: (asset: AssetItem) => void;
   onEditAsset: (asset: AssetItem) => void;
   onDeleteAsset: (asset: AssetItem) => void;
 }) {
@@ -328,6 +336,7 @@ function AssetsCards({
           <div className="mt-4 border-t border-neutral-100 pt-4">
             <AssetActions
               compact
+              onView={() => onViewAsset(asset)}
               onEdit={() => onEditAsset(asset)}
               onDelete={() => onDeleteAsset(asset)}
             />
@@ -341,23 +350,27 @@ function AssetsCards({
 function AssetsCatalogResults({
   assets,
   viewMode,
+  onViewAsset,
   onEditAsset,
   onDeleteAsset,
 }: {
   assets: AssetItem[];
   viewMode: AssetsCatalogViewMode;
+  onViewAsset: (asset: AssetItem) => void;
   onEditAsset: (asset: AssetItem) => void;
   onDeleteAsset: (asset: AssetItem) => void;
 }) {
   return viewMode === "table" ? (
     <AssetsTable
       assets={assets}
+      onViewAsset={onViewAsset}
       onEditAsset={onEditAsset}
       onDeleteAsset={onDeleteAsset}
     />
   ) : (
     <AssetsCards
       assets={assets}
+      onViewAsset={onViewAsset}
       onEditAsset={onEditAsset}
       onDeleteAsset={onDeleteAsset}
     />

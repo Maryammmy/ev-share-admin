@@ -12,8 +12,6 @@ import { ReactNode } from "react";
 import { cn } from "@/lib";
 import { ScrollArea } from "./scroll-area";
 
-// import { ScrollArea } from "./scroll-area";
-
 interface IProps {
   open: boolean;
   onClose: () => void;
@@ -57,7 +55,7 @@ function Modal({
             )}
           </DialogHeader>
         )}
-        <ScrollArea className="max-h-[85svh] overflow-y-auto">
+        <ScrollArea className="max-h-[85svh] overflow-y-auto **:data-[slot=scroll-area-scrollbar]:left-0 **:data-[slot=scroll-area-scrollbar]:right-auto">
           {children}
         </ScrollArea>
         {footer && <DialogFooter>{footer}</DialogFooter>}
@@ -75,7 +73,7 @@ export function CloseButtonModal({ closeButtonClassname }: ICloseButtonProps) {
   return (
     <DialogClose
       className={cn(
-        "w-6 h-6 rounded-full border-2 flex justify-center items-center absolute right-4 top-4 border-primary bg-background text-primary",
+        "w-6 h-6 rounded-full border-2 flex justify-center items-center absolute left-4 top-4 border-primary bg-background text-primary",
         closeButtonClassname && closeButtonClassname,
       )}
     >

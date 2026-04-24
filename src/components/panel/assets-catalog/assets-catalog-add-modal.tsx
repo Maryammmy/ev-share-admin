@@ -3,13 +3,24 @@ import { ChevronDown, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import Modal from "@/components/ui/modal";
-import { assetsCatalogItems, type AssetItem } from "./assets-catalog-results";
+import { assetsCatalogItems } from "./assets-catalog-results";
 
-type AssetsCatalogEditModalProps = {
-  asset: AssetItem | null;
+type AssetsCatalogAddModalProps = {
   open: boolean;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (data: NewAssetData) => void;
+};
+
+type NewAssetData = {
+  name: string;
+  price: string;
+  type: string;
+  status: string;
+  city: string;
+  location: string;
+  battery: string;
+  trips: string;
+  id: string;
 };
 
 type FieldProps = {
@@ -18,6 +29,7 @@ type FieldProps = {
   required?: boolean;
   suffix?: string;
   options?: string[];
+  placeholder?: string;
   onChange?: (value: string) => void;
   className?: string;
 };
@@ -28,6 +40,7 @@ function Field({
   required = false,
   suffix,
   options,
+  placeholder,
   onChange,
   className,
 }: FieldProps) {
@@ -66,8 +79,15 @@ function Field({
             dir="rtl"
             className="flex h-14 w-full items-center justify-between gap-3 overflow-hidden rounded-[14px] border border-[#ffd01e] bg-[rgba(255,208,30,0.02)] px-4 py-3 text-sm font-medium leading-5 text-dark-gray"
           >
-            <span className="min-w-0 truncate text-right">{value}</span>
-            <span className="grid h-12 w-16 shrink-0 place-items-center rounded-[14px] bg-[rgba(255,231,140,0.45)] text-sm font-medium text-dark-gray">
+            <input
+              type="text"
+              dir="rtl"
+              value={value}
+              placeholder={placeholder}
+              onChange={(e) => onChange?.(e.target.value)}
+              className="min-w-0 w-full flex-1 bg-transparent text-right outline-none placeholder:font-normal placeholder:text-gray-300"
+            />
+            <span className="grid h-8 w-14 shrink-0 place-items-center rounded-[10px] bg-[rgba(255,231,140,0.45)] text-sm font-medium text-dark-gray">
               {suffix}
             </span>
           </div>
@@ -83,7 +103,13 @@ function Field({
             }`}
             aria-expanded={isOpen}
           >
-            <span className="min-w-0 truncate text-right">{value}</span>
+            <span
+              className={`min-w-0 truncate text-right ${
+                !value ? "font-normal text-gray-300" : ""
+              }`}
+            >
+              {value || placeholder}
+            </span>
             <ChevronDown
               className={`size-5 shrink-0 text-dark-gray transition ${
                 isOpen ? "rotate-180" : ""
@@ -95,7 +121,14 @@ function Field({
             dir="rtl"
             className="flex h-14 w-full items-center overflow-hidden rounded-[14px] border border-[#ffd01e] bg-[rgba(255,208,30,0.02)] px-4 py-3 text-sm font-medium leading-5 text-dark-gray"
           >
-            <span className="min-w-0 truncate text-right">{value}</span>
+            <input
+              type="text"
+              dir="rtl"
+              value={value}
+              placeholder={placeholder}
+              onChange={(e) => onChange?.(e.target.value)}
+              className="min-w-0 w-full bg-transparent text-right outline-none placeholder:font-normal placeholder:text-gray-300"
+            />
           </div>
         )}
 
@@ -124,49 +157,36 @@ function Field({
   );
 }
 
-function AssetsCatalogEditModal({
-  asset,
+function AssetsCatalogAddModal({
   open,
   onClose,
   onSave,
-}: AssetsCatalogEditModalProps) {
-  const [selectedName, setSelectedName] = useState<string>(
-    asset?.name ?? "اسكوتر سريع C12",
-  );
-  const [selectedType, setSelectedType] = useState<string>(
-    asset?.type ?? "شاحن",
-  );
-  const [selectedStatus, setSelectedStatus] = useState<string>(
-    asset?.status ?? "غير نشط",
-  );
-  const [selectedCity, setSelectedCity] = useState<string>(
-    asset?.city ?? "الدمام",
-  );
-  const [selectedId, setSelectedId] = useState<string>(asset?.id ?? "EV-2402");
+}: AssetsCatalogAddModalProps) {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
+  const [city, setCity] = useState("");
+  const [location, setLocation] = useState("");
+  const [battery, setBattery] = useState("");
+  const [trips, setTrips] = useState("");
+  const [id, setId] = useState("");
 
   const dropdownOptions = useMemo(() => {
-    const unique = (values: string[], fallback: string) =>
-      Array.from(new Set([fallback, ...values].filter(Boolean)));
+    const unique = (values: string[]) =>
+      Array.from(new Set(values.filter(Boolean)));
 
     return {
-      names: unique(
-        assetsCatalogItems.map((catalogAsset) => catalogAsset.name),
-        selectedName,
-      ),
-      types: unique(
-        assetsCatalogItems.map((catalogAsset) => catalogAsset.type),
-        selectedType,
-      ),
-      statuses: unique(
-        assetsCatalogItems.map((catalogAsset) => catalogAsset.status),
-        selectedStatus,
-      ),
-      cities: unique(
-        assetsCatalogItems.map((catalogAsset) => catalogAsset.city),
-        selectedCity,
-      ),
+      names: unique(assetsCatalogItems.map((a) => a.name)),
+      types: unique(assetsCatalogItems.map((a) => a.type)),
+      statuses: unique(assetsCatalogItems.map((a) => a.status)),
+      cities: unique(assetsCatalogItems.map((a) => a.city)),
     };
-  }, [selectedCity, selectedName, selectedStatus, selectedType]);
+  }, []);
+
+  const handleSave = () => {
+    onSave({ name, price, type, status, city, location, battery, trips, id });
+  };
 
   return (
     <Modal
@@ -178,10 +198,10 @@ function AssetsCatalogEditModal({
         <header className="flex items-start justify-between gap-4">
           <div className="text-right">
             <h2 className="text-xl font-medium leading-[30px] text-dark-gray">
-              تعديل الأصل
+              إضافة أصل
             </h2>
             <p className="mt-1 text-sm font-medium leading-5 text-[#9da4ae]">
-              تحديث تفاصيل {selectedName || "الأصل"}
+              أدخل تفاصيل الأصل الجديد
             </p>
           </div>
 
@@ -200,59 +220,78 @@ function AssetsCatalogEditModal({
           <Field
             required
             label="اسم الأصل"
-            value={selectedName}
+            value={name}
+            placeholder="مثال: اسكوتر سريع C12"
             options={dropdownOptions.names}
-            onChange={(value) => setSelectedName(value)}
+            onChange={setName}
           />
           <Field
             required
             label="السعر"
-            value={asset?.price?.replace(/[^\d]/g, "") || "2500"}
+            value={price}
+            placeholder="0"
             suffix="ر.س"
+            onChange={setPrice}
           />
           <Field
             required
             label="النوع"
-            value={selectedType}
+            value={type}
+            placeholder="اختر النوع"
             options={dropdownOptions.types}
-            onChange={(value) => setSelectedType(value)}
+            onChange={setType}
           />
           <Field
             required
             label="الحالة"
-            value={selectedStatus}
+            value={status}
+            placeholder="اختر الحالة"
             options={dropdownOptions.statuses}
-            onChange={(value) => setSelectedStatus(value)}
+            onChange={setStatus}
           />
           <Field
             required
             label="المدينة"
-            value={selectedCity}
+            value={city}
+            placeholder="اختر المدينة"
             options={dropdownOptions.cities}
-            onChange={(value) => setSelectedCity(value)}
+            onChange={setCity}
           />
           <Field
             required
             label="الموقع التفصيلي"
-            value={asset?.location ?? "جدة - حي الروضة"}
+            value={location}
+            placeholder="مثال: جدة - حي الروضة"
+            onChange={setLocation}
           />
-          <Field label="مستوى البطارية (%)" value="92 %" />
-          <Field label="عدد الرحلات" value="878" />
+          <Field
+            label="مستوى البطارية (%)"
+            value={battery}
+            placeholder="100"
+            onChange={setBattery}
+          />
+          <Field
+            label="عدد الرحلات"
+            value={trips}
+            placeholder="0"
+            onChange={setTrips}
+          />
           <Field
             className="sm:col-span-2"
             label="معرف الأصل"
-            value={selectedId}
-            onChange={(value) => setSelectedId(value)}
+            value={id}
+            placeholder="مثال: EV-2402"
+            onChange={setId}
           />
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Button
             type="button"
-            onClick={onSave}
+            onClick={handleSave}
             className="h-16 rounded-[14px] px-6 py-3.5 bg-primary hover:brightness-95 text-base font-medium text-dark-gray"
           >
-            حفظ تعديل
+            إضافة أصل
           </Button>
           <Button
             type="button"
@@ -268,4 +307,4 @@ function AssetsCatalogEditModal({
   );
 }
 
-export default AssetsCatalogEditModal;
+export default AssetsCatalogAddModal;

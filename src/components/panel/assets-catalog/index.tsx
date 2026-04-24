@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import AssetsCatalogFilters, {
   type AssetFilterValue,
 } from "./assets-catalog-filters";
+import AssetsCatalogAddSuccessModal from "./assets-catalog-add-success-modal";
+import AssetsCatalogDetailsModal from "./assets-catalog-details-modal";
 import AssetsCatalogResults, {
   type AssetItem,
   assetsCatalogItems,
@@ -17,8 +19,10 @@ import AssetsCatalogResults, {
 } from "./assets-catalog-results";
 import AssetsCatalogDeleteConfirmModal from "./assets-catalog-delete-confirm-modal";
 import AssetsCatalogEditModal from "./assets-catalog-edit-modal";
+import AssetsCatalogEditSuccessModal from "./assets-catalog-edit-success-modal";
 import AssetsCatalogSearch from "./assets-catalog-search";
 import AssetsCatalogStats from "./assets-catalog-stats";
+import AssetsCatalogAddModal from "./assets-catalog-add-modal";
 
 function AssetsCatalog() {
   const [viewMode, setViewMode] = useState<AssetsCatalogViewMode>("table");
@@ -31,9 +35,15 @@ function AssetsCatalog() {
 
   const [assetPendingDelete, setAssetPendingDelete] =
     useState<AssetItem | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAddSuccessOpen, setIsAddSuccessOpen] = useState(false);
+  const [assetPendingView, setAssetPendingView] = useState<AssetItem | null>(
+    null,
+  );
   const [assetPendingEdit, setAssetPendingEdit] = useState<AssetItem | null>(
     null,
   );
+  const [isEditSuccessOpen, setIsEditSuccessOpen] = useState(false);
 
   const cities = Array.from(
     new Set(assetsCatalogItems.map((asset) => asset.city)),
@@ -42,7 +52,14 @@ function AssetsCatalog() {
   const filteredAssets = assetsCatalogItems.filter((asset) => {
     const matchesSearch =
       !normalizedQuery ||
-      [asset.name, asset.id, asset.location, asset.city, asset.type, asset.status]
+      [
+        asset.name,
+        asset.id,
+        asset.location,
+        asset.city,
+        asset.type,
+        asset.status,
+      ]
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery);
@@ -101,6 +118,7 @@ function AssetsCatalog() {
           </div>
           <Button
             type="button"
+            onClick={() => setIsAddModalOpen(true)}
             className="h-12 rounded-2xl bg-primary px-6 text-base font-medium text-secondary shadow-[0_4px_12px_rgba(255,213,79,0.25)] hover:bg-primary/90"
           >
             <Plus className="size-5" />
@@ -123,15 +141,40 @@ function AssetsCatalog() {
       <AssetsCatalogResults
         assets={filteredAssets}
         viewMode={viewMode}
+        onViewAsset={setAssetPendingView}
         onEditAsset={setAssetPendingEdit}
         onDeleteAsset={setAssetPendingDelete}
+      />
+      <AssetsCatalogDetailsModal
+        asset={assetPendingView}
+        open={Boolean(assetPendingView)}
+        onClose={() => setAssetPendingView(null)}
       />
       <AssetsCatalogEditModal
         key={assetPendingEdit?.id ?? "edit-modal"}
         asset={assetPendingEdit}
         open={Boolean(assetPendingEdit)}
         onClose={() => setAssetPendingEdit(null)}
-        onSave={() => setAssetPendingEdit(null)}
+        onSave={() => {
+          setAssetPendingEdit(null);
+          setIsEditSuccessOpen(true);
+        }}
+      />
+      <AssetsCatalogAddModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSave={() => {
+          setIsAddModalOpen(false);
+          setIsAddSuccessOpen(true);
+        }}
+      />
+      <AssetsCatalogAddSuccessModal
+        open={isAddSuccessOpen}
+        onClose={() => setIsAddSuccessOpen(false)}
+      />
+      <AssetsCatalogEditSuccessModal
+        open={isEditSuccessOpen}
+        onClose={() => setIsEditSuccessOpen(false)}
       />
       <AssetsCatalogDeleteConfirmModal
         open={Boolean(assetPendingDelete)}

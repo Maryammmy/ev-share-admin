@@ -52,7 +52,7 @@ function AssetsCatalogDeleteConfirmModal({
     <Modal
       open={open}
       onClose={onClose}
-      contentClassName="w-[calc(100%-2rem)] max-w-[537px] rounded-[20px] border-0 bg-[#fcfcfd] px-7 py-8 shadow-[0_18px_45px_rgba(16,24,40,0.16)]"
+      contentClassName="rounded-[20px] border-0 bg-background shadow-[0_18px_45px_rgba(16,24,40,0.16)]"
     >
       <div className="mx-auto flex w-full max-w-[481px] flex-col items-center justify-center gap-6 text-center">
         <div className="flex flex-col items-center gap-4">
@@ -73,7 +73,7 @@ function AssetsCatalogDeleteConfirmModal({
             type="button"
             variant="ghost"
             onClick={onClose}
-            className="h-[54px] rounded-[14px] bg-neutral-100 px-4 py-3 text-base font-medium text-[#384250] hover:bg-neutral-200"
+            className="h-[54px] rounded-[14px] bg-neutral-100 px-4 py-3 text-base font-medium text-dark-gray hover:bg-neutral-200"
           >
             إغلاق
           </Button>
