@@ -65,10 +65,10 @@ function FilterLabel({
 }) {
   return (
     <div className="flex items-center gap-2">
+      <span className={cn("size-1.5 rounded-full", colorClassName)} />
       <span className="text-xs leading-4 tracking-[0.03em] text-gray">
         {label}
       </span>
-      <span className={cn("size-1.5 rounded-full", colorClassName)} />
     </div>
   );
 }
@@ -83,7 +83,7 @@ function AssetsCatalogFilters({
   onTypeChange,
 }: AssetsCatalogFiltersProps) {
   return (
-    <section className="rounded-2xl border border-neutral-100/80 bg-white px-6 py-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+    <section className="rounded-2xl border bg-white border-neutral-100/80 px-6 py-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
       <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
         <div className="space-y-2.5">
           <FilterLabel label="النوع" colorClassName="bg-blue-500" />
