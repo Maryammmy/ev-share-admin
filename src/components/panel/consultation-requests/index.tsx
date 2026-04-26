@@ -11,12 +11,15 @@ import ConsultationRequestsHeading from "./consultation-requests-heading";
 import ConsultationRequestsStats from "./consultation-requests-stats";
 import ConsultationRequestsTable from "./consultation-requests-table";
 import ConsultationRequestsToolbar from "./consultation-requests-toolbar";
+import ConsultationRequestDetailsPanel from "./consultation-request-details-panel";
 
 type ConsultationFilterValue<T extends string> = T | "الكل";
 type ConsultationSortValue = "الاحدث" | "الاقدم";
 
 function ConsultationRequests() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedRequest, setSelectedRequest] =
+    useState<(typeof consultationRequests)[number] | null>(null);
   const [selectedSort, setSelectedSort] =
     useState<ConsultationSortValue>("الاحدث");
   const [selectedStatus, setSelectedStatus] =
@@ -58,7 +61,15 @@ function ConsultationRequests() {
         onStatusChange={setSelectedStatus}
         onTypeChange={setSelectedType}
       />
-      <ConsultationRequestsTable requests={filteredRequests} />
+      <ConsultationRequestsTable
+        requests={filteredRequests}
+        onViewRequest={setSelectedRequest}
+      />
+      <ConsultationRequestDetailsPanel
+        request={selectedRequest}
+        open={Boolean(selectedRequest)}
+        onClose={() => setSelectedRequest(null)}
+      />
     </div>
   );
 }

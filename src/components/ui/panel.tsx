@@ -61,7 +61,9 @@ function Panel({
             </SheetTitle>
             {description && (
               <SheetDescription
-                {...(descriptionClassName && { className: descriptionClassName })}
+                {...(descriptionClassName && {
+                  className: descriptionClassName,
+                })}
               >
                 {description}
               </SheetDescription>

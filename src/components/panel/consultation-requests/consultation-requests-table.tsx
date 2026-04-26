@@ -18,14 +18,20 @@ import {
 
 function ConsultationRequestsTable({
   requests = consultationRequests,
+  onViewRequest,
 }: {
   requests?: ConsultationRequest[];
+  onViewRequest?: (request: ConsultationRequest) => void;
 }) {
   return (
     <section className="space-y-4 md:space-y-0 md:overflow-hidden md:rounded-lg md:bg-white">
       <div className="space-y-4 md:hidden">
         {requests.map((request) => (
-          <MobileRequestCard key={request.id} request={request} />
+          <MobileRequestCard
+            key={request.id}
+            request={request}
+            onViewRequest={onViewRequest}
+          />
         ))}
       </div>
 
@@ -61,6 +67,7 @@ function ConsultationRequestsTable({
                       icon={Eye}
                       label="عرض طلب الاستشارة"
                       className="bg-blue-50 text-blue-600"
+                      onClick={() => onViewRequest?.(request)}
                     />
                     <ActionButton
                       icon={Pencil}
@@ -87,7 +94,13 @@ function ConsultationRequestsTable({
   );
 }
 
-function MobileRequestCard({ request }: { request: ConsultationRequest }) {
+function MobileRequestCard({
+  request,
+  onViewRequest,
+}: {
+  request: ConsultationRequest;
+  onViewRequest?: (request: ConsultationRequest) => void;
+}) {
   return (
     <article>
       <div className="rounded-2xl border border-primary/15 bg-white p-4 text-right text-sm font-medium text-dark-gray">
@@ -116,6 +129,7 @@ function MobileRequestCard({ request }: { request: ConsultationRequest }) {
           icon={Eye}
           label="عرض طلب الاستشارة"
           className="bg-blue-50 text-blue-600"
+          onClick={() => onViewRequest?.(request)}
         />
         <ActionButton
           icon={Pencil}
@@ -213,15 +227,18 @@ function ActionButton({
   icon: Icon,
   label,
   className,
+  onClick,
 }: {
   icon: LucideIcon;
   label: string;
   className: string;
+  onClick?: () => void;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
+      onClick={onClick}
       className={cn(
         "grid size-11 place-items-center rounded-lg transition hover:brightness-95",
         className,
